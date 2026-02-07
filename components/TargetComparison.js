@@ -34,10 +34,10 @@ export default function TargetComparison({ categories, total }) {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'good': return 'text-green-400';
-      case 'low': return 'text-yellow-400';
-      case 'high': return 'text-orange-400';
-      default: return 'text-gray-400';
+      case 'good': return 'text-green-600 dark:text-green-400';
+      case 'low': return 'text-yellow-600 dark:text-yellow-400';
+      case 'high': return 'text-orange-600 dark:text-orange-400';
+      default: return 'text-gray-500 dark:text-gray-400';
     }
   };
 
@@ -51,7 +51,7 @@ export default function TargetComparison({ categories, total }) {
   };
 
   return (
-    <div className="bg-dark-card rounded-lg p-6 border border-dark-border">
+    <div className="bg-light-card dark:bg-dark-card rounded-lg p-6 border border-light-border dark:border-dark-border shadow-sm">
       <h2 className="text-xl font-semibold mb-4">目标 vs 实际</h2>
       <div className="space-y-4">
         {comparisons.map((item) => (
@@ -68,7 +68,7 @@ export default function TargetComparison({ categories, total }) {
                 <span className={`font-semibold ${getStatusColor(item.status)}`}>
                   {item.actual}%
                 </span>
-                <span className="text-gray-500 text-sm">
+                <span className="text-gray-600 dark:text-gray-500 text-sm">
                   目标: {item.target}
                 </span>
                 <span className={`text-lg ${getStatusColor(item.status)}`}>
@@ -77,7 +77,7 @@ export default function TargetComparison({ categories, total }) {
               </div>
             </div>
             {/* 进度条 */}
-            <div className="w-full bg-dark-bg rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-200 dark:bg-dark-bg rounded-full h-2 overflow-hidden">
               <div 
                 className="h-full rounded-full transition-all"
                 style={{ 
@@ -90,16 +90,16 @@ export default function TargetComparison({ categories, total }) {
           </div>
         ))}
       </div>
-      <div className="mt-6 pt-4 border-t border-dark-border">
-        <div className="text-sm text-gray-400 space-y-1">
+      <div className="mt-6 pt-4 border-t border-light-border dark:border-dark-border">
+        <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-green-400">✓</span> 达标
+            <span className="text-green-600 dark:text-green-400">✓</span> 达标
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-yellow-400">↓</span> 低于目标
+            <span className="text-yellow-600 dark:text-yellow-400">↓</span> 低于目标
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-orange-400">↑</span> 高于目标
+            <span className="text-orange-600 dark:text-orange-400">↑</span> 高于目标
           </div>
         </div>
       </div>

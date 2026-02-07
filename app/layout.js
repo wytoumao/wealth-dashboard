@@ -1,4 +1,6 @@
 import './globals.css'
+import ThemeProvider from '@/components/ThemeProvider'
+import ThemeToggle from '@/components/ThemeToggle'
 
 export const metadata = {
   title: '财富管理仪表盘',
@@ -7,8 +9,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="zh-CN">
-      <body className="bg-dark-bg text-white min-h-screen">{children}</body>
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className="bg-light-bg dark:bg-dark-bg text-gray-900 dark:text-white min-h-screen">
+        <ThemeProvider>
+          <ThemeToggle />
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

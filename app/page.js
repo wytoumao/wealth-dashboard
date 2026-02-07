@@ -136,12 +136,12 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-8">财富管理仪表盘</h1>
       
       {/* 总资产卡片 */}
-      <div className="bg-dark-card rounded-lg p-6 mb-6 border border-dark-border">
-        <div className="text-gray-400 text-sm mb-2">总资产</div>
-        <div className="text-4xl font-bold text-green-400">
+      <div className="bg-light-card dark:bg-dark-card rounded-lg p-6 mb-6 border border-light-border dark:border-dark-border shadow-sm">
+        <div className="text-gray-500 dark:text-gray-400 text-sm mb-2">总资产</div>
+        <div className="text-4xl font-bold text-green-600 dark:text-green-400">
           ¥{assets.total.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </div>
-        <div className="text-gray-500 text-sm mt-2">
+        <div className="text-gray-400 dark:text-gray-500 text-sm mt-2">
           更新时间: {assets.lastUpdate}
         </div>
       </div>
