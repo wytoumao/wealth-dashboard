@@ -21,11 +21,13 @@ export default function Home() {
     goldPriceCny: 1150, // 每克
   };
 
-  // 基础资产数据（快照）
+  // 基础资产数据（精确持仓）
   const baseAssets = {
     crypto: {
       stablecoin: 101283, // USD
-      spot: 38152, // USD (70% BTC, 20% ETH, 10% SOL)
+      btc: 0.4, // BTC 数量
+      eth: 2.35, // ETH 数量（wbETH 质押形式）
+      sol: 23, // SOL 数量（bbSOL 质押形式）
     },
     stocks: {
       sp500: 7279, // USD
@@ -72,46 +74,20 @@ export default function Home() {
   // 计算资产
   useEffect(() => {
     if (!prices.btc || !prices.eth || !prices.sol) {
-      // 使用快照数据
-      const cryptoValueCny = (baseAssets.crypto.stablecoin + baseAssets.crypto.spot) * config.usdToCny;
-      const stocksValueCny = (baseAssets.stocks.sp500 + baseAssets.stocks.qqq + baseAssets.stocks.other) * config.usdToCny;
-      const cashCnyValue = baseAssets.cashCny.icbc + baseAssets.cashCny.boc + baseAssets.cashCny.providentFund;
-      const stablecoinValueCny = baseAssets.crypto.stablecoin * config.usdToCny;
-      const goldValueCny = baseAssets.gold.grams * config.goldPriceCny;
-
-      const total = cryptoValueCny + stocksValueCny + cashCnyValue + goldValueCny;
-
-      setAssets({
-        categories: [
-          { name: '加密货币', value: cryptoValueCny, color: '#f59e0b' },
-          { name: '美股', value: stocksValueCny, color: '#3b82f6' },
-          { name: '现金（人民币）', value: cashCnyValue, color: '#10b981' },
-          { name: '现金（投资/稳定币）', value: stablecoinValueCny, color: '#8b5cf6' },
-          { name: '黄金', value: goldValueCny, color: '#fbbf24' },
-        ],
-        details: [
-          { category: '加密货币', name: '稳定币', amount: `$${baseAssets.crypto.stablecoin.toLocaleString()}`, value: baseAssets.crypto.stablecoin * config.usdToCny },
-          { category: '加密货币', name: '现货 (BTC/ETH/SOL)', amount: `$${baseAssets.crypto.spot.toLocaleString()}`, value: baseAssets.crypto.spot * config.usdToCny },
-          { category: '美股', name: 'SP500', amount: `$${baseAssets.stocks.sp500.toLocaleString()}`, value: baseAssets.stocks.sp500 * config.usdToCny },
-          { category: '美股', name: 'QQQ', amount: `$${baseAssets.stocks.qqq.toLocaleString()}`, value: baseAssets.stocks.qqq * config.usdToCny },
-          { category: '美股', name: '其他', amount: `$${baseAssets.stocks.other.toLocaleString()}`, value: baseAssets.stocks.other * config.usdToCny },
-          { category: '现金（人民币）', name: '工商银行', amount: '非流动', value: baseAssets.cashCny.icbc },
-          { category: '现金（人民币）', name: '中国银行', amount: '贷款账户', value: baseAssets.cashCny.boc },
-          { category: '现金（人民币）', name: '公积金', amount: '', value: baseAssets.cashCny.providentFund },
-          { category: '黄金', name: '现货', amount: `${baseAssets.gold.grams}克`, value: goldValueCny },
-        ],
-        total,
-        lastUpdate: new Date().toLocaleString('zh-CN'),
-      });
+      // 加载中，暂不显示
       return;
     }
 
-    // 使用实时价格计算
-    const btcAmount = baseAssets.crypto.spot * 0.7 / prices.btc;
-    const ethAmount = baseAssets.crypto.spot * 0.2 / prices.eth;
-    const solAmount = baseAssets.crypto.spot * 0.1 / prices.sol;
+    // 使用实时价格计算（精确持仓数量）
+    const btcAmount = baseAssets.crypto.btc;
+    const ethAmount = baseAssets.crypto.eth;
+    const solAmount = baseAssets.crypto.sol;
 
-    const cryptoSpotValue = (btcAmount * prices.btc + ethAmount * prices.eth + solAmount * prices.sol) * config.usdToCny;
+    const btcValueUsd = btcAmount * prices.btc;
+    const ethValueUsd = ethAmount * prices.eth;
+    const solValueUsd = solAmount * prices.sol;
+    const cryptoSpotValue = (btcValueUsd + ethValueUsd + solValueUsd) * config.usdToCny;
+    
     const stablecoinValue = baseAssets.crypto.stablecoin * config.usdToCny;
     const cryptoValueCny = cryptoSpotValue + stablecoinValue;
     
@@ -131,9 +107,9 @@ export default function Home() {
       ],
       details: [
         { category: '加密货币', name: '稳定币', amount: `$${baseAssets.crypto.stablecoin.toLocaleString()}`, value: stablecoinValue },
-        { category: '加密货币', name: `BTC (${btcAmount.toFixed(4)})`, amount: `$${prices.btc.toLocaleString()}`, value: btcAmount * prices.btc * config.usdToCny },
-        { category: '加密货币', name: `ETH (${ethAmount.toFixed(4)})`, amount: `$${prices.eth.toLocaleString()}`, value: ethAmount * prices.eth * config.usdToCny },
-        { category: '加密货币', name: `SOL (${solAmount.toFixed(4)})`, amount: `$${prices.sol.toLocaleString()}`, value: solAmount * prices.sol * config.usdToCny },
+        { category: '加密货币', name: `BTC`, amount: `${btcAmount} 枚 @ $${prices.btc.toLocaleString()}`, value: btcValueUsd * config.usdToCny },
+        { category: '加密货币', name: `ETH (wbETH)`, amount: `${ethAmount} 枚 @ $${prices.eth.toLocaleString()}`, value: ethValueUsd * config.usdToCny },
+        { category: '加密货币', name: `SOL (bbSOL)`, amount: `${solAmount} 枚 @ $${prices.sol.toLocaleString()}`, value: solValueUsd * config.usdToCny },
         { category: '美股', name: 'SP500', amount: `$${baseAssets.stocks.sp500.toLocaleString()}`, value: baseAssets.stocks.sp500 * config.usdToCny },
         { category: '美股', name: 'QQQ', amount: `$${baseAssets.stocks.qqq.toLocaleString()}`, value: baseAssets.stocks.qqq * config.usdToCny },
         { category: '美股', name: '其他', amount: `$${baseAssets.stocks.other.toLocaleString()}`, value: baseAssets.stocks.other * config.usdToCny },
